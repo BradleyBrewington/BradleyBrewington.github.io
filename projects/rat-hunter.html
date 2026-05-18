@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous mobile robot — Bradley Brewington</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="brand">brewington.eng</a>
+      <nav class="site-nav">
+        <a href="../index.html" class="active">work</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+        <a href="../contact.html">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <a href="../index.html" class="back-link">&larr; back to work</a>
+
+      <div class="project-header">
+        <div class="role">mxet 300 mechatronics i &middot; team of 4 &middot; spring 2025</div>
+        <h1>Autonomous mobile robot platform</h1>
+        <p class="summary">
+          Mobile robot autonomously patrolling an enclosed space, detecting and pursuing
+          target objects using LIDAR-and-vision sensor fusion, and engaging them with a
+          mechanical capture mechanism. My focus: target tracking and patrol-mode navigation.
+        </p>
+
+        <dl class="fact-grid">
+          <div>
+            <dt>Timeline</dt>
+            <dd>Spring 2025</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>Target tracking; patrol &amp; obstacle-avoidance algorithms</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>Python &middot; SICK LIDAR &middot; OpenCV &middot; PWM motor control</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Functional &mdash; passed final demonstration</dd>
+          </div>
+        </dl>
+      </div>
+
+      <h2>The brief</h2>
+      <p>
+        MXET 300 Mobile Robotics, semester-long team project. Build an autonomous robot that
+        patrols an enclosed space, detects rats, pursues them, and engages with a mechanical
+        capture system &mdash; the underlying robotics curriculum being autonomous behavior, sensor
+        fusion, and state-machine-based control. Four-person team.
+      </p>
+
+      <figure>
+        <img src="../images/rat-hunter-side.jpg" alt="Side view of the autonomous mobile robot platform on a bench - aluminum extrusion frame, large blue drive wheel, caster wheel, SICK LIDAR mounted on top, white capture plate visible at the front">
+        <figcaption>Side profile. SICK LIDAR up top for ranging and obstacle detection, large blue drive wheels, caster at the rear, white capture plate at the front. The stuffed rat in the background isn&rsquo;t standard issue.</figcaption>
+      </figure>
+
+      <h2>Sensor fusion: LIDAR for ranging, camera for identification</h2>
+      <p>
+        Neither sensor alone solves the problem. LIDAR gives you accurate distance and motion
+        information but no way to tell a rat from an empty cardboard box. A camera gives you
+        target identification but unreliable range. Together they reinforce each other: LIDAR
+        narrows the search to moving objects within engagement distance, and the camera confirms
+        the target identity by color and shape before the robot commits to pursuit.
+      </p>
+      <p>
+        On this team I owned the target-tracking pipeline and the patrol/obstacle-avoidance
+        algorithms. The detection chain reads the LIDAR distance scan to find candidates
+        (objects in the right distance band, with motion across consecutive frames), then
+        cross-checks against the OpenCV color-thresholded camera frame to confirm the candidate
+        is the right target before issuing a pursuit command to the motor controllers.
+      </p>
+
+      <figure>
+        <img src="../images/rat-hunter-front.jpg" alt="Front view of the robot showing the dual capture mechanism - servo-driven white plates, central camera, headlight LED, and the SICK LIDAR rangefinder mounted above">
+        <figcaption>Front view. Camera (centered, between the two servo-driven capture plates) feeds OpenCV color-thresholding; SICK LIDAR (top) feeds the ranging and obstacle map; LED headlamp provides illumination for the camera in lower-light test environments.</figcaption>
+      </figure>
+
+      <h2>State-machine control</h2>
+      <p>
+        The robot&rsquo;s overall behavior is structured as a state machine cycling between three
+        modes:
+      </p>
+      <ul class="bulleted">
+        <li><strong>Patrol</strong> &mdash; the default state. The robot moves through the room on a coverage pattern, with the LIDAR-driven obstacle avoidance keeping it from collisions and the detection pipeline running continuously in the background.</li>
+        <li><strong>Pursuit</strong> &mdash; triggered when a candidate target is confirmed by both sensors. Drive controller switches from coverage to direct-engagement geometry: head toward the target with continuous range updates from LIDAR.</li>
+        <li><strong>Capture</strong> &mdash; triggered when the target is within engagement distance. Activates the front capture mechanism (driven by separate motors) while the drive controller holds the robot stationary.</li>
+      </ul>
+      <p>
+        Transitions between states are gated by sensor thresholds calibrated during testing &mdash;
+        most of the late-project work was tuning these thresholds in a controlled test
+        environment to find the right balance between false-positive engagements (chasing
+        anything that moved) and false-negative misses (ignoring a target because its
+        signature didn&rsquo;t quite cross the threshold).
+      </p>
+
+      <h2>The team</h2>
+      <p>
+        Four-person team. Teammates owned the pursuit/engagement algorithms, the obstacle-
+        avoidance LIDAR processing, and the mechanical design of the capture mechanism. My
+        contribution was the target-tracking pipeline and the patrol-mode navigation logic.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 Bradley Brewington</div>
+      <div class="links">
+        <a href="mailto:bmbrewington4@gmail.com">email</a>
+        <a href="https://linkedin.com/in/bradleybrewington" target="_blank" rel="noopener">linkedin</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

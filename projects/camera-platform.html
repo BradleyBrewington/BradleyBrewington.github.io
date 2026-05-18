@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4-axis camera platform — Bradley Brewington</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="brand">brewington.eng</a>
+      <nav class="site-nav">
+        <a href="../index.html" class="active">work</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+        <a href="../contact.html">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <a href="../index.html" class="back-link">&larr; back to work</a>
+
+      <div class="project-header">
+        <div class="role">research assistant &middot; baker research group &middot; texas a&amp;m</div>
+        <h1>4-axis motorized camera platform</h1>
+        <p class="summary">
+          Stepper motor control and electronics for a cell-sample imaging rig used during
+          electrochemical experiments. The physical structure was designed by the supervising
+          researcher. I built the electronics, configured the firmware, debugged a coil-wiring
+          problem that masqueraded as a firmware fault, and wrote the operating manual for handoff.
+        </p>
+
+        <dl class="fact-grid">
+          <div>
+            <dt>Timeline</dt>
+            <dd>2025 &mdash; 2026</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>Stepper electronics, firmware configuration, debug, handoff documentation</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>BTT SKR Mini E3 V2.0 &middot; TMC2209 drivers &middot; 4&times; NEMA17 &middot; Marlin firmware &middot; serial control via Pronterface</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Operational; handed off to researcher</dd>
+          </div>
+        </dl>
+
+        <p class="downloads">
+          <a href="../files/Motion_System_Operating_Guide.pdf">&darr; Operating manual (PDF)</a>
+        </p>
+      </div>
+
+      <h2>The use case</h2>
+      <p>
+        The Baker Group runs electrochemical experiments where multiple cell samples need to be
+        imaged at controlled positions over the course of an experiment that can run for hours.
+        The supervising researcher wanted a rig that could move a camera through a defined
+        position pattern repeatably so imaging conditions stayed constant across runs and across
+        samples. He designed the physical structure; he asked me to make the motion work.
+      </p>
+
+      <h2>What I built</h2>
+      <p>
+        Four axes of stepper motion driven by a BigTreeTech SKR Mini E3 v2.0 motor controller
+        running Marlin firmware over USB serial. Four NEMA17 stepper motors on the four axes,
+        with a wiring harness tying the controller, motors, limit switches, and power supply
+        together inside the existing structure. I configured Marlin&rsquo;s motion parameters &mdash;
+        steps per millimeter, acceleration limits, microstepping, per-axis current via the
+        onboard TMC2209 drivers &mdash; for the specific kinematics of the rig.
+      </p>
+      <p>
+        The BTT SKR Mini E3 plus Marlin is a 3D printer stack, not an obvious fit for a
+        non-printer lab instrument. The reason it works: it&rsquo;s a very mature stack for
+        synchronized multi-axis stepper control with TMC2209 driver feedback over UART, and the
+        G-code interface maps cleanly to &ldquo;move axis N to position X at speed Y,&rdquo; which is
+        exactly what the researcher needed to script the imaging routine. Building a custom
+        controller from scratch would have taken weeks. This stack got it working in days.
+      </p>
+
+      <h2>The wiring problem</h2>
+      <p>
+        The first version of the system was unstable in a way that took a while to localize.
+        Motors would shake during moves rather than step cleanly, and after a move the driver
+        settings would revert to the EEPROM defaults instead of holding the values I had
+        flashed in. Both symptoms pointed at firmware. I reflashed Marlin multiple times,
+        verified the configuration, watched the settings reload, watched them revert on the
+        next move.
+      </p>
+      <p>
+        Running the TMC2209 driver status report (<code>M122</code>) confirmed what I was
+        seeing: the driver UART connection was dropping after each move, and the settings I had
+        flashed in were getting replaced by EEPROM defaults each time the driver
+        re-initialized. So the problem wasn&rsquo;t the EEPROM or the firmware. Something was
+        forcing the driver to re-initialize on every move.
+      </p>
+      <p>
+        That pointed to hardware. I went back to the SKR Mini&rsquo;s manual, looked at the motor
+        connector pinout on the board, and ran a multimeter across the stepper motor pins to
+        map the coil pairs. The cables didn&rsquo;t match the board. The board labels its motor
+        connector pins <code>2B, 1B, 1A, 2A</code>. The cables were routing one wire of each
+        motor coil to an inner pin and the other to an outer pin, splitting both coils across
+        both driver pairs. The drivers can&rsquo;t drive a split coil. They fault on the first
+        move, the UART drops, and the driver re-initializes from EEPROM defaults on the next
+        command.
+      </p>
+      <p>
+        The lab had a mix of stepper motors and cables collected over time, some of which had
+        different coil-connector pinouts. Each motor had to be checked against its cable and
+        the board before commissioning. The fix was straightforward once the cause was clear:
+        identify each motor&rsquo;s coil pairs with a multimeter, re-pin the connectors so each coil
+        terminates on the correct pair, and re-verify with <code>M122</code>. The diagnostic
+        and verification procedure is the longest section of the operating manual.
+      </p>
+
+      <h2>Handoff</h2>
+      <p>
+        Once the platform was running reliably, I wrote an operating manual covering
+        Pronterface setup, the pre-session checklist, the G-code command set the researcher
+        would actually use, the software travel limits that silently stop motion past 235mm,
+        the full <code>M122</code> driver status reference, an error-signature table mapping
+        the common fault flags to root cause and recovery action, the coil-wiring verification
+        procedure, and the firmware calibration order for when the mechanical setup changes.
+      </p>
+      <p>
+        The researcher uses the rig directly in experiments. I&rsquo;m not in the loop on runtime.
+        The manual is the contract between the hardware as I built it and the researcher
+        running experiments on it.
+      </p>
+
+      <h2>Role</h2>
+      <p>
+        The physical structure of the platform was designed by the supervising researcher, not
+        by me. My scope was the controller selection, the wiring harness, the firmware
+        configuration, the debug, and the documentation.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 Bradley Brewington</div>
+      <div class="links">
+        <a href="mailto:bmbrewington4@gmail.com">email</a>
+        <a href="https://linkedin.com/in/bradleybrewington" target="_blank" rel="noopener">linkedin</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

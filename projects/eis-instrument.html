@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EIS instrumentation — Bradley Brewington</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="brand">brewington.eng</a>
+      <nav class="site-nav">
+        <a href="../index.html" class="active">work</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+        <a href="../contact.html">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <a href="../index.html" class="back-link">&larr; back to work</a>
+
+      <div class="project-header">
+        <div class="role">research assistant &middot; baker research group &middot; texas a&amp;m</div>
+        <h1>Precision EIS instrumentation</h1>
+        <p class="summary">
+          Custom mixed-signal hardware for electrochemical impedance spectroscopy on
+          cell samples. A 4-channel header circuit with programmable gain and
+          switchable filtering, designed in KiCad. A single-channel breadboard
+          prototype, then a single-channel test PCB. Most of the project ended up
+          being the debug effort that followed.
+        </p>
+
+        <dl class="fact-grid">
+          <div>
+            <dt>Timeline</dt>
+            <dd>April 2024 &mdash; May 2026</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>Component selection, schematic capture, PCB layout, prototyping, debug</dd>
+          </div>
+          <div>
+            <dt>Tools</dt>
+            <dd>KiCad, LTSpice, CH Instruments electrochemical workstation, bench instrumentation</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>4-channel design complete; single-channel test PCB operational; inductive artifact corrected in post-processing</dd>
+          </div>
+        </dl>
+
+        <p class="downloads">
+          <a href="../files/ImpedanceDevice.pdf">&darr; Full 4-channel schematic (PDF, 26 sheets)</a>
+        </p>
+      </div>
+
+      <h2>Context</h2>
+      <p>
+        This opportunity was a great learning experience. I worked under PhD
+        students and assisted with electronic development and debug efforts.
+        Working in a research lab was exciting because often, no one knew what
+        they were doing. We were solving problems without clear or established
+        solutions. Every task I was given was something I had never done before:
+        poring over datasheets to find the right component, teaching myself
+        KiCad, consulting with professors to help design filters.
+      </p>
+
+      <h2>First task: a Bessel filter</h2>
+      <p>
+        When I was hired, my first task was designing a Bessel filter for their
+        work, because Bessel filters cause minimal phase shift across the
+        passband. That matters in EIS, where the phase of the impedance is half
+        of what's being measured.
+      </p>
+      <p>
+        Once that was complete, my supervisor would describe certain behaviors
+        and requirements and I would find an IC that matched what he described.
+        When he was satisfied with what I had found, he tasked me with the next
+        piece. That working pattern set up the rest of the project. Every op-amp
+        in the final design was chosen this way.
+      </p>
+
+      <h2>The 4-channel header circuit</h2>
+      <p>
+        My next task was to design a 4-channel header circuit to interface
+        between the FPGA and the cell samples. Having never designed a PCB, I
+        decided to work in KiCad because the learning curve was less steep than
+        with Altium.
+      </p>
+      <p>
+        The circuit needed programmable gain and switchable output filtering on
+        each channel. Each channel has a potentiostat front end (OPA827 buffer
+        into an OPA2205 instrumentation amplifier), a transimpedance stage with
+        four selectable feedback values from 100x to 400x gain, and two parallel
+        Bessel filter paths (50 kHz and 200 kHz) at the output. Gain selection
+        uses a string of 100k feedback resistors in series with switches across
+        each one: shorting all but one gives 100x gain, shorting none gives 400x.
+        Switching between gain settings and filter paths is done with TLP3250
+        solid-state optocoupler relays rather than physical switches, so the
+        control signals stay isolated from the analog ground and out of the
+        measurement.
+      </p>
+      <p>
+        Because the current had to be kept low to avoid damaging the cells,
+        every component had to be carefully selected to keep the noise floor
+        below what would disrupt accurate measurements. Designing this circuit
+        while learning KiCad at the same time was a challenge.
+      </p>
+
+      <figure>
+        <img src="../images/eis-schematic-root.png" alt="KiCad hierarchical root schematic for the 4-channel EIS frontend, showing four identical channel sub-sheets and a shared power sheet supplying ±15V from a 24V input">
+        <figcaption>Hierarchical root of the 4-channel design, KiCad 9.0.6. Four identical channel sheets share a single power sheet supplying &plusmn;15V from a 24V input.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/eis-schematic-channel.png" alt="Single-channel high-level circuit schematic showing the OPA827 stimulus buffer driving the working electrode, the OPA2205 instrumentation amplifier reading the reference and counter electrodes, and the sub-sheet references to the programmable gain blocks and the switch-and-filter output stage">
+        <figcaption>Single-channel detail. OPA827 buffer drives the working electrode; OPA2205 instrumentation amplifier reads the reference-to-counter difference for the potentiostat feedback. The R_2 / R_3 sub-sheets are the programmable gain blocks (TLP3250 SSRs shorting 100k feedback resistors in series to select 100x through 400x gain); Switch_And_Filters routes the result through either the 50 kHz or 200 kHz Bessel filter to the BNC outputs.</figcaption>
+      </figure>
+
+      <h2>Single-channel breadboard prototype</h2>
+      <p>
+        Before committing the 4-channel design to fab, we built a single-channel
+        breadboard prototype to verify the topology on real hardware. We tested
+        it on a known load: a resistor in series with a resistor and capacitor in
+        parallel. The expected shape on the Nyquist plot should be a semicircle.
+        Our semicircle had a "tail" that dropped below the real axis, indicating
+        unexpected inductance.
+      </p>
+
+      <figure>
+        <img src="../images/eis-inductance-artifact.jpg" alt="Nyquist plot of channel 1 from the LabVIEW front end, showing a semicircle with a tail looping below the real axis at high frequency, indicating an inductive artifact in the measured impedance">
+        <figcaption>The artifact, on channel 1 of the front end. Plot is in EIS convention with the inductive region below the real axis.</figcaption>
+      </figure>
+
+      <p>
+        The 4-channel board was never ordered. The full design stayed on paper,
+        and the single channel became the focus.
+      </p>
+
+      <h2>Single-channel test PCB</h2>
+      <p>
+        To rule out the breadboard itself as the source of the inductance, I
+        implemented the same circuit as a PCB. The test board isn't a direct
+        subset of the 4-channel design. It's a simpler topology built around
+        the same signal-chain components: the shunt resistor sits after the
+        cell rather than before, and there's no programmable gain or filter
+        switching. The point was to validate the analog signal chain on real
+        silicon, not to recreate the 4-channel design at smaller scale.
+      </p>
+
+      <figure>
+        <img src="../images/eis-architecture.svg" alt="System architecture block diagram of the single-channel test PCB, showing the power module feeding ±15V rails to three OPA827 blocks: a stimulus follower driving the sample, a high-impedance voltage sense buffer, and a transimpedance current sense amplifier">
+        <figcaption>Test PCB architecture. Stimulus follower drives the 2-electrode sample; voltage and current at the sample are read back through a high-impedance buffer and a transimpedance amplifier.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/eis-test-circuit-schematic.png" alt="Full KiCad schematic of the test circuit, showing the three OPA827 op-amp stages with their power supply decoupling, the 1k input resistor, the 100k transimpedance feedback resistor, and the BNC connector references">
+        <figcaption>Test circuit schematic. Three OPA827 stages share the same &plusmn;15V supply as the 4-channel design.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/eis-test-board-top.jpg" alt="Top-down photo of the assembled single-channel test PCB with three BNC connectors, power module, and op-amps visible">
+        <figcaption>Assembled test PCB. Three BNCs carry stimulus and read-back; the power section (left) handles the &plusmn;15V supply from a 24V input.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/eis-test-board-leads.jpg" alt="Test PCB on the bench with long yellow wire leads soldered to the test points for impedance measurement at each node in the signal chain">
+        <figcaption>Test PCB on the bench, instrumented with leads to the test points for impedance measurement at each node in the signal chain.</figcaption>
+      </figure>
+
+      <p>
+        The artifact was still there. Not the breadboard.
+      </p>
+
+      <h2>Debug</h2>
+      <p>
+        When faced with a challenge without a clear solution, I learned various
+        techniques to find one. Often, the first step is to find a paper or
+        project that solved a similar or adjacent problem. That is a starting
+        point, but then the real work begins.
+      </p>
+      <p>
+        Debugging the inductance artifact drove home the importance of
+        documentation. Without keeping a record of what was attempted, I would
+        find myself rerunning the same test. Keeping a log of tests and marking
+        each tested component became standard practice. When a complex system
+        is not working, you have to break it into its most basic components and
+        verify each one. Otherwise, you cannot pinpoint the exact source of the
+        error.
+      </p>
+      <p>
+        First, we shortened the connecting wires from the test breadboard
+        circuit to the FPGA board. No fix. Then I implemented the breadboard
+        test circuit as a PCB to determine if the inductance was coming from
+        the breadboard itself. Still there.
+      </p>
+      <p>
+        In parallel, we tried to eliminate the inductance by subtracting it out
+        in post-processing, modeling it as a series component. That also
+        failed. Using a CH Instruments electrochemical workstation as our
+        reference instrument, I traced the current path and measured the
+        impedance at each point in the circuit with the op-amps powered on and
+        powered off, trying to identify which component was the source. Other
+        than noise, this did not reveal anything. The same workstation run on
+        the same RC load produced a clean semicircle, which confirmed the test
+        resistors themselves were not contributing inductance at the
+        frequencies we cared about.
+      </p>
+      <p>
+        We then dove into the FPGA programming code (the FPGA had been
+        programmed by a researcher who had recently left the lab). The FPGA
+        would take an initial measurement with no sample to generate a baseline
+        impedance, then subtract that from the measured impedance of a sample.
+        But the baseline impedance was an average across the entire frequency
+        range. We changed the code so that it subtracted the baseline
+        frequency-by-frequency. Real bug, real fix. The artifact remained.
+      </p>
+      <p>
+        I simulated the circuit in LTSpice to determine if the topology was
+        causing the inductance. That did not reveal anything conclusive either.
+      </p>
+      <p>
+        When faced with a hard roadblock like this, often the best thing to do
+        is to start approaching the problem from a variety of different
+        angles. We wrote a much simpler FPGA program and started testing
+        different circuit topologies to measure impedance.
+      </p>
+      <p>
+        Eventually, a paper was found that described a similar issue and
+        explained how to remove the inductance in post-processing. We had been
+        subtracting the inductance assuming it was in series, but the
+        interfering impedance is in parallel. This adjustment allowed for
+        accurate measurements.
+      </p>
+
+      <h2>Role</h2>
+      <p>
+        The lab is a chemistry group. The PhD students and supervising
+        professor set scientific direction and made the architectural calls.
+        On the hardware itself I was the in-lab expert by default, since I was
+        the only member with formal electronics training. Every op-amp and
+        passive in the design was chosen by me against specs they described.
+        KiCad and EIS measurement were both new to me at the start.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 Bradley Brewington</div>
+      <div class="links">
+        <a href="mailto:bmbrewington4@gmail.com">email</a>
+        <a href="https://linkedin.com/in/bradleybrewington" target="_blank" rel="noopener">linkedin</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

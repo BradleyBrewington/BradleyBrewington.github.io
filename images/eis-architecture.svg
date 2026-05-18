@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d4a45a"/>
+    </marker>
+    <marker id="arrow-stim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#888888"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="460" fill="#0a0a0a"/>
+
+  <!-- Power section (top) -->
+  <rect x="320" y="30" width="160" height="60" fill="#1a1a1a" stroke="#d4a45a" stroke-width="1.5" rx="3"/>
+  <text x="400" y="55" fill="#d4a45a" font-size="13" font-weight="500" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">POWER</text>
+  <text x="400" y="73" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">24V → ±15V, GND</text>
+  <text x="400" y="85" fill="#6a6a6a" font-size="10" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">MEA1D2415SC</text>
+
+  <!-- Power distribution lines (dashed, going down to each block) -->
+  <line x1="400" y1="90" x2="400" y2="115" stroke="#d4a45a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <line x1="180" y1="115" x2="650" y2="115" stroke="#d4a45a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <line x1="180" y1="115" x2="180" y2="200" stroke="#d4a45a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <line x1="180" y1="280" x2="180" y2="340" stroke="#d4a45a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <line x1="650" y1="115" x2="650" y2="340" stroke="#d4a45a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <text x="410" y="108" fill="#6a6a6a" font-size="9" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">±15V rails</text>
+
+  <!-- BNC input (left) -->
+  <circle cx="40" cy="240" r="14" fill="none" stroke="#888888" stroke-width="1.5"/>
+  <circle cx="40" cy="240" r="4" fill="#888888"/>
+  <text x="40" y="278" fill="#888888" font-size="10" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">AC stim in</text>
+  <text x="40" y="290" fill="#6a6a6a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">BNC</text>
+
+  <!-- Stimulus buffer block -->
+  <rect x="100" y="200" width="160" height="80" fill="#1a1a1a" stroke="#d4a45a" stroke-width="1.5" rx="3"/>
+  <text x="180" y="225" fill="#d4a45a" font-size="12" font-weight="500" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">STIMULUS FOLLOWER</text>
+  <text x="180" y="245" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">unity-gain buffer</text>
+  <text x="180" y="263" fill="#d4a45a" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">OPA827</text>
+
+  <!-- Arrow: BNC to stimulus -->
+  <line x1="55" y1="240" x2="98" y2="240" stroke="#888888" stroke-width="1.5" marker-end="url(#arrow-stim)"/>
+
+  <!-- Sample (cell) - center -->
+  <rect x="320" y="200" width="160" height="80" fill="#1a1a1a" stroke="#888888" stroke-width="1.5" stroke-dasharray="5,3" rx="3"/>
+  <text x="400" y="225" fill="#888888" font-size="12" font-weight="500" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">SAMPLE</text>
+  <text x="400" y="245" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">2 electrodes</text>
+  <text x="400" y="263" fill="#6a6a6a" font-size="10" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">electrochemical cell</text>
+
+  <!-- Arrow: stimulus to sample -->
+  <line x1="260" y1="240" x2="318" y2="240" stroke="#d4a45a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Voltage sense (bottom-left) -->
+  <rect x="100" y="340" width="160" height="80" fill="#1a1a1a" stroke="#d4a45a" stroke-width="1.5" rx="3"/>
+  <text x="180" y="365" fill="#d4a45a" font-size="12" font-weight="500" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">VOLTAGE SENSE</text>
+  <text x="180" y="385" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">high-Z buffer</text>
+  <text x="180" y="403" fill="#d4a45a" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">OPA827</text>
+
+  <!-- Path: sample → voltage sense (down then left into block) -->
+  <path d="M 360 280 L 360 380 L 262 380" stroke="#d4a45a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- BNC output for voltage -->
+  <circle cx="30" cy="380" r="10" fill="none" stroke="#888888" stroke-width="1.2"/>
+  <circle cx="30" cy="380" r="3" fill="#888888"/>
+  <text x="30" y="408" fill="#6a6a6a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">V_out</text>
+  <line x1="98" y1="380" x2="42" y2="380" stroke="#d4a45a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Current sense TIA (bottom-right) -->
+  <rect x="540" y="340" width="220" height="80" fill="#1a1a1a" stroke="#d4a45a" stroke-width="1.5" rx="3"/>
+  <text x="650" y="365" fill="#d4a45a" font-size="12" font-weight="500" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">CURRENT SENSE (TIA)</text>
+  <text x="650" y="385" fill="#a0a0a0" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">transimpedance, 100kΩ fb</text>
+  <text x="650" y="403" fill="#d4a45a" font-size="11" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">OPA827</text>
+
+  <!-- Path: sample → current sense TIA -->
+  <path d="M 440 280 L 440 380 L 538 380" stroke="#d4a45a" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- BNC output for current -->
+  <circle cx="785" cy="380" r="10" fill="none" stroke="#888888" stroke-width="1.2"/>
+  <circle cx="785" cy="380" r="3" fill="#888888"/>
+  <text x="785" y="408" fill="#6a6a6a" font-size="9" text-anchor="middle" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">I_out</text>
+  <line x1="762" y1="380" x2="772" y2="380" stroke="#d4a45a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Legend (bottom) -->
+  <g transform="translate(20, 445)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#d4a45a" stroke-width="1.5"/>
+    <text x="26" y="4" fill="#6a6a6a" font-size="10" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">signal path</text>
+    <line x1="120" y1="0" x2="140" y2="0" stroke="#d4a45a" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+    <text x="146" y="4" fill="#6a6a6a" font-size="10" font-family="'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace">power rails</text>
+  </g>
+</svg>

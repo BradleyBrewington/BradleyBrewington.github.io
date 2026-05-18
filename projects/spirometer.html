@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portable spirometer — Bradley Brewington</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="brand">brewington.eng</a>
+      <nav class="site-nav">
+        <a href="../index.html" class="active">work</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+        <a href="../contact.html">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <a href="../index.html" class="back-link">&larr; back to work</a>
+
+      <div class="project-header">
+        <div class="role">senior capstone (ESET 420) &middot; texas a&amp;m</div>
+        <h1>Portable spirometer</h1>
+        <p class="summary">
+          Senior capstone project to design a portable, low-cost spirometer that approaches
+          clinical accuracy. The device measures forced exhalation airflow and computes FEV1,
+          FVC, FEV1/FVC, and PEF, displays results on an LCD and a paired iPhone app, and
+          stores session data for trend monitoring. Six-person team. The pressure sensor
+          failed during the final demo, so the demo ran on simulated patient profiles instead
+          of live measurements.
+        </p>
+
+        <dl class="fact-grid">
+          <div>
+            <dt>Timeline</dt>
+            <dd>August 2025 &mdash; May 2026</dd>
+          </div>
+          <div>
+            <dt>Team</dt>
+            <dd>Heydan Dewberry (PM), Maxim Benanti (EE), Isaiah Edwards (TE), Bradley Brewington (Hardware), Ananya Joshi (SE), Benjamin Bian (Embedded). Advisors: Dr. Porter, Dr. Hudson. Stakeholder: Professor Smith.</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>HSCD differential pressure sensor, MCP6002 op-amp, MCP3008 ADC, Raspberry Pi Zero 2 W, BLE, LCD, custom PCB</dd>
+          </div>
+          <div>
+            <dt>My role</dt>
+            <dd>Hardware Engineer (team title). Mechanical design lead in practice: mouthpiece, flow path, enclosure, manufacturing drawings.</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Functional prototype assembled and demoed. Pressure sensor failed during final demo. System validated on simulated profiles.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <h2>The problem</h2>
+      <p>
+        About 25 million Americans, including 4.6 million children, have asthma. Lung function
+        data is captured a few times a year in clinics, but symptoms vary day to day at home.
+        The two existing options force a tradeoff: clinical spirometers are accurate but cost
+        $1000 to $3000 and are clinic-bound, and peak flow meters are portable and cheap but
+        give a single reading that depends heavily on technique.
+      </p>
+      <p>
+        The project goal was a device that approaches clinical-grade flow and volume
+        measurement at a portable form factor and a price point that makes daily home use
+        realistic. Beyond a single number, it produces flow-volume and volume-time curves,
+        computes the standard clinical metrics (FEV1, FVC, FEV1/FVC, PEF), and stores session
+        data so users can see deviations from their own baseline over time.
+      </p>
+
+      <h2>How it works</h2>
+      <p>
+        The user exhales forcefully through a handheld mouthpiece. Inside the mouthpiece, a
+        nylon mesh creates a controlled resistance to airflow, producing a pressure
+        differential across it. An HSCD differential pressure sensor reads the pressure on
+        each side and outputs an analog voltage proportional to the difference. The signal
+        passes through a second-order Sallen-Key Butterworth low-pass filter (2 kHz cutoff,
+        MCP6002 op-amp) into a 12-bit MCP3008 ADC. A Raspberry Pi Zero 2 W reads the ADC over
+        SPI, converts pressure to flow to volume, computes the spirometry metrics, and pushes
+        results to an LCD on the base unit and over BLE to an iPhone app for session storage
+        and trend analysis.
+      </p>
+
+      <h2>What the team built</h2>
+      <p>
+        A handheld 3D-printed mouthpiece with a replaceable hygienic tip and an integrated
+        flow-straightening mesh. A custom PCB carrying the pressure sensor, filter, ADC, and
+        Pi interface. A base enclosure housing the Pi, battery, and LCD. Firmware on the Pi
+        for sampling, conversion, metric computation, and BLE transmission. A Swift iPhone
+        app for session results, trend views, and baseline comparison. Total bill of
+        materials: $494.57.
+      </p>
+
+      <h2>Final demo</h2>
+      <p>
+        The functional prototype was complete: enclosure, mouthpiece, PCB, Pi, LCD, app, and
+        BLE link. The differential pressure sensor output stuck at 0.8 V during the demo,
+        suspected to be a hardware fault or ADC interface issue, and no valid airflow data
+        could be captured. The team demoed the full pipeline using three simulated patient
+        profiles (healthy, asthmatic, bad technique) to show the metric computation, LCD
+        display, and app trend views. BLE was partially integrated but a UUID mismatch
+        prevented full end-to-end pairing.
+      </p>
+
+      <figure>
+        <img src="../images/spirometer-asthma.jpg" alt="Functional spirometer prototype on the bench, displaying results for a simulated asthma patient profile: FVC 6.10 L, FEV1 2.55 L, PEF 4.92 L/s, FEV1/FVC 0.42">
+        <figcaption>Final prototype displaying the simulated asthma profile during demo. FEV1/FVC 0.42, below the 0.70 clinical threshold for airway obstruction.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/spirometer-poster.png" alt="Texas A&M Engineering Project Showcase poster for the Portable Hand-Held Pulmonary Function Device, with sections on background, problem definition, proposed solution, system design and methodology, results and validation, and future work">
+        <figcaption>Engineering Project Showcase poster, booth 241.</figcaption>
+      </figure>
+
+      <h2>My contribution</h2>
+      <p>
+        I was the mechanical design lead on the team. My scope covered the mouthpiece, the
+        flow path, the enclosure, and the manufacturing drawings for fabrication.
+      </p>
+      <p>
+        The mouthpiece does two jobs. It has to be comfortable to use one-handed for a forced
+        exhalation, and it has to produce a controlled, repeatable pressure differential
+        across the flow-straightening element so the differential pressure sensor reads a
+        clean signal. The first job is ergonomic. The second is fluid dynamic.
+      </p>
+      <p>
+        For the flow-straightening element I researched a Fleisch pneumotachograph design (an
+        array of small parallel tubes that forces laminar flow and produces a linear
+        pressure-flow relationship) and a simpler nylon mesh membrane. The Fleisch design is
+        more accurate but harder to manufacture cleanly at 3D-printing tolerances. We went
+        with a nylon mesh that produced an adequate pressure differential at the expected
+        flow rates with much simpler fabrication. The mesh sits between the inlet and outlet
+        barrels of the mouthpiece and is held in place by the assembly geometry.
+      </p>
+      <p>
+        I went through two design iterations on the mouthpiece body (V1 to V2). V2 tightened
+        the seal around the mesh, improved the grip geometry, and added bosses for the
+        threaded inserts used to secure the replaceable hygienic tip.
+      </p>
+      <p>
+        The base enclosure houses the Raspberry Pi, the PCB, the LCD, and the battery. I
+        designed the lid as a separate part so the LCD could be mounted from the inside and
+        the assembly could be opened for service without disturbing the wiring. The
+        mouthpiece holder is a small standalone part that lets the mouthpiece sit upright on
+        the base when not in use.
+      </p>
+      <p>
+        Everything was modeled in Fusion 360 and 3D-printed on the lab&rsquo;s printers for
+        fit-checks before final fabrication. The dimensioned drawings below are what I
+        produced for the manufacturing handoff.
+      </p>
+
+      <figure>
+        <img src="../images/spirometer-cad-mouthpiece-angle.png" alt="Isometric Fusion 360 view of the two-piece spirometer mouthpiece assembly showing the inlet bulb head and the longer ergonomic handle body">
+        <figcaption>Mouthpiece V2 in Fusion 360. Two halves enclose the nylon mesh and house the differential pressure sensor connections.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/spirometer-drawing-mouthpiece.png" alt="Dimensioned engineering drawing of the spirometer mouthpiece V2 showing overall length, inlet and outlet diameters, mesh seat geometry, and threaded insert locations">
+        <figcaption>Mouthpiece V2 drawing.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/spirometer-drawing-lid.png" alt="Dimensioned engineering drawing of the base enclosure lid showing the LCD cutout and mounting screw pattern">
+        <figcaption>Base enclosure lid drawing. LCD mounts from the inside through the central cutout.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="../images/spirometer-drawing-holder.png" alt="Dimensioned engineering drawing of the mouthpiece holder showing the cradle profile and mounting feature">
+        <figcaption>Mouthpiece holder drawing. Keeps the mouthpiece upright on the base between sessions.</figcaption>
+      </figure>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 Bradley Brewington</div>
+      <div class="links">
+        <a href="mailto:bmbrewington4@gmail.com">email</a>
+        <a href="https://linkedin.com/in/bradleybrewington" target="_blank" rel="noopener">linkedin</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embedded home security system — Bradley Brewington</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="brand">brewington.eng</a>
+      <nav class="site-nav">
+        <a href="../index.html" class="active">work</a>
+        <a href="../resume.html">resume</a>
+        <a href="../contact.html">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <a href="../index.html" class="back-link">&larr; back to work</a>
+
+      <div class="project-header">
+        <div class="role">course project &middot; ECEN coursework &middot; texas a&amp;m &middot; summer 2024</div>
+        <h1>Embedded home security system</h1>
+        <p class="summary">
+          A 4-digit combination lock implemented in ARM assembly on the TI MSP432P401R.
+          Photoresistor-triggered activation, button-driven combination entry, LED status
+          feedback, multi-attempt lockout. Bare-metal: no operating system, no HAL, direct
+          memory-mapped I/O.
+        </p>
+
+        <dl class="fact-grid">
+          <div>
+            <dt>Timeline</dt>
+            <dd>Summer 2024</dd>
+          </div>
+          <div>
+            <dt>Team</dt>
+            <dd>Two-person partner project</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>ARM assembly &middot; TI MSP432P401R LaunchPad &middot; breadboard prototyping</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Complete</dd>
+          </div>
+        </dl>
+
+        <p class="downloads">
+          <a href="../files/HomeSecuritySystem.s">&darr; ARM assembly source (HomeSecuritySystem.s)</a>
+        </p>
+      </div>
+
+      <h2>What it does</h2>
+      <p>
+        The system sits idle until a photoresistor detects light (a person passing). That
+        triggers entry mode. The user enters a 4-button combination on tactile switches;
+        combination LEDs light to confirm each press. A check button submits the attempt. If
+        correct, a green LED stays on. If incorrect, a red LED lights to indicate the attempt
+        count, and after three failed attempts the system enters an emergency lockout with
+        flashing red LEDs that doesn&rsquo;t recover until reset.
+      </p>
+
+      <h2>How it works</h2>
+      <p>
+        The MSP432 was configured at the register level. GPIO directions, pull-up resistors,
+        and pin assignments are written directly to the port configuration registers. No GPIO
+        library, no abstraction layer. The combination check uses a single comparison
+        register accumulated bit-by-bit as each button is pressed, so the final state is one
+        byte compared against the correct combination (0xC1) in a single instruction.
+      </p>
+      <p>
+        The state machine runs in a tight polling loop: read button state, branch to the
+        appropriate handler, update the comparison register, return to the loop. Each LED has
+        a guard so it can only be lit once per attempt, preventing a held button from passing
+        the check.
+      </p>
+
+      <h2>Circuit</h2>
+
+      <figure>
+        <img src="../images/msp432-circuit.png" alt="Circuit diagram showing the TI MSP432P401R LaunchPad wired to a breadboard with tactile switches, photoresistor, status LEDs (three red and one green), and combination indicator LEDs (four yellow), with pull-up resistor networks">
+        <figcaption>TI MSP432P401R LaunchPad wired to a breadboard with the photoresistor, tactile switches, status LEDs (3 red, 1 green), combination indicator LEDs (4 yellow), and pull-up resistors. Buttons run right to left, P6.0&ndash;P6.1 on the left pair and P6.6&ndash;P6.7 on the right pair.</figcaption>
+      </figure>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 Bradley Brewington</div>
+      <div class="links">
+        <a href="mailto:bmbrewington4@gmail.com">email</a>
+        <a href="https://linkedin.com/in/bradleybrewington" target="_blank" rel="noopener">linkedin</a>
+        <a href="../resume.html">resume</a>
+        <a href="../random.html">random</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

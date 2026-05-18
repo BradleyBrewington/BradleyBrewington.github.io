@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random — Bradley Brewington</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">brewington.eng</a>
+      <nav class="site-nav">
+        <a href="index.html">work</a>
+        <a href="resume.html">resume</a>
+        <a href="contact.html">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="container">
+      <a href="index.html" class="back-link">&larr; back to work</a>
+
+      <div class="project-header">
+        <h1>Random</h1>
+        <p class="summary">
+          Personal projects, tinkering, and other things I&rsquo;ve built that didn&rsquo;t fit
+          anywhere else on the site. Not engineering deliverables. Things I did for fun.
+        </p>
+      </div>
+
+      <h2>Humanoid hand manipulation robot</h2>
+      <p class="role">Python &middot; ToF sensors &middot; servo control &middot; MXET 250 &middot; 2024</p>
+      <p>
+        Mobile robot with a 5-finger humanoid hand for autonomous maze navigation, object
+        manipulation, and color sorting. String-actuated fingers driven by continuous servos
+        with rubber band tension for grip. 4-bar arm linkage with a 4.167:1 gear ratio for
+        lifting. Autonomous navigation compared left and right ToF sensor readings with a
+        10cm buffer to identify turn opportunities.
+      </p>
+      <p>
+        I worked on the navigation algorithm and the mechanical arm. The arm had a tipping
+        problem that we solved with counterweight placement and rubber band tension.
+      </p>
+
+      <figure>
+        <img src="images/humanoid-hand.jpg" alt="Mobile robot with a 5-finger humanoid hand attached to a 4-bar linkage arm, posed on the lab floor">
+      </figure>
+
+      <h2>Soft robotics worm</h2>
+      <p class="role">Arduino &middot; servo motors &middot; bioinspired design &middot; liquid latex fabrication</p>
+      <p>
+        Bioinspired peristaltic locomotion robot designed to navigate constrained pipe
+        environments, modeled on earthworm locomotion. Two servo motors connected via hot
+        glue sticks as the contractile element. Anchor segments made from molded liquid latex
+        setae inspired by earthworm anatomy. Arduino coordinates the actuation sequence:
+        rear anchor engages, body contracts, front anchor engages, rear anchor releases,
+        body extends. Achieves forward locomotion on inclines up to 60 degrees.
+      </p>
+
+      <figure>
+        <img src="images/random-worm.png" alt="Assembled soft robotics worm on a bench, showing the segmented latex body wrapped around two servo motors with a clear plastic head section">
+      </figure>
+
+      <p>
+        Demo: <a href="https://youtu.be/TWmMyu6sbFI" target="_blank" rel="noopener">youtu.be/TWmMyu6sbFI</a>
+      </p>
+
+      <h2>RC animatronic turtle</h2>
+      <p class="role">Arduino &middot; steppers &middot; relay control &middot; hardware reverse-engineering</p>
+      <p>
+        Toy turtle with independent flipper actuation, driven by reverse-engineered RC car
+        electronics. I pulled four digital control signals off an RC car PCB and fed them to
+        an Arduino, then drove the front flippers with a K&rsquo;Nex motor through a relay and
+        the rear flippers with individual stepper motors. Hybrid actuation because the front
+        flippers needed torque and the back flippers needed articulation.
+      </p>
+
+      <figure>
+        <img src="images/random-turtle.png" alt="Toy turtle shell opened up showing the Arduino, breadboard, relay, and stepper motor wiring inside">
+      </figure>
+
+      <p>
+        Demo: <a href="https://youtu.be/-LuXjDbVeh0" target="_blank" rel="noopener">youtu.be/-LuXjDbVeh0</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="copy">&copy; 2026 Bradley Brewington</div>
+      <div class="links">
+        <a href="mailto:bmbrewington4@gmail.com">email</a>
+        <a href="https://linkedin.com/in/bradleybrewington" target="_blank" rel="noopener">linkedin</a>
+        <a href="resume.html">resume</a>
+        <a href="random.html">random</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
