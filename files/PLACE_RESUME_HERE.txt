@@ -1,2 +1,0 @@
-Place Brewington_Resume.pdf in this directory.
-The resume.html page expects this exact filename.
